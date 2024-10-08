@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Pdf-Talk
 
-## Getting Started
+Pdf-Talk is a web application that allows users to upload PDF documents and ask questions related to the content of the PDF. The AI will analyze the uploaded PDF and provide answers based on the document's contents, making it easier for users to extract relevant information without manually reading through the entire document. This tool leverages modern AI models and natural language processing (NLP) to provide concise and accurate responses.
 
-First, run the development server:
+### Features
+
+- **PDF Upload:** Users can upload PDF documents to the platform.
+- **AI-Powered Q&A:** Users can ask questions, and the AI provides answers based on the content of the uploaded PDF.
+- **User Authentication:** Secure login with GitHub or Google using NextAuth.
+- **Responsive Design:** The interface is fully responsive, ensuring accessibility on mobile, tablet, and desktop devices.
+- **User Profile:** Displays user profile info, including avatar, name, and email. Option to log out.
+- **Error Handling:** Detects invalid or empty PDF uploads and provides feedback to the user.
+- **Protected Routes:** Prevents unauthorized access to certain pages such as the dashboard, ensuring that only authenticated users can view their documents.
+
+### Installation
+
+```bash
+git clone https://github.com/your-username/pdf-talk.git
+cd pdf-talk
+npm install
+```
+
+### Environment Variables
+
+Set the following environment variables in your `.env.local` file:
+
+```
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+OPENAI_API_KEY=your_openai_api_key
+```
+
+### Usage
+
+1. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Open your browser and navigate to `http://localhost:3000`.
+3. Sign in using your GitHub or Google account.
+4. Upload a PDF document and ask questions to the AI.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Contribution Guidelines
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+We welcome contributions to enhance PDF Talk. To contribute, please follow the guidelines below:
 
-## Learn More
+1. **Fork the Repository:** Fork the project repository to your own GitHub account.
+2. **Create a Branch:** Create a new branch for your feature or bug fix:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+git checkout -b feature/new-feature
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Make Changes:** Implement your feature or fix the issue.
+4. **Test Your Changes:** Ensure that all the changes you made are working as expected and do not break any functionality.
+5. **Commit Your Changes:** Commit your changes with a descriptive commit message:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+git commit -m "Added new feature: feature description"
+```
 
-## Deploy on Vercel
+6. **Push the Changes:** Push your branch to GitHub:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+git push origin feature/new-feature
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+7. **Create a Pull Request:** Submit a pull request to the main repository, describing the changes you made. The project maintainers will review your pull request and merge it if everything is in order.
