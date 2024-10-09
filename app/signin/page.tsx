@@ -52,7 +52,7 @@ export default function Signin() {
                         variant="outline"
                         className="w-full bg-white text-black border-4 border-black hover:bg-gray-200 pixel-border flex items-center justify-center"
                         onClick={async () => {
-                            await signIn("google");
+                            await signIn("google", { callbackUrl: "/dashboard" });
                         }}>
                         <Chrome className="mr-2 h-5 w-5" />
                         Sign in with Google
@@ -61,7 +61,7 @@ export default function Signin() {
                         variant="outline"
                         className="w-full bg-white text-black border-4 border-black hover:bg-gray-200 pixel-border flex items-center justify-center"
                         onClick={async () => {
-                            await signIn("github");
+                            await signIn("github", { callbackUrl: "/dashboard" });
                         }}>
                         <Github className="mr-2 h-5 w-5" />
                         Sign in with GitHub

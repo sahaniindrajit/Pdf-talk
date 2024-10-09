@@ -15,7 +15,7 @@ Pdf-Talk is a web application that allows users to upload PDF documents and ask 
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/pdf-talk.git
+git clone https://github.com/sahaniindrajit/Pdf-talk.git
 cd pdf-talk
 npm install
 ```
