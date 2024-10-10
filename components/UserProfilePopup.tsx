@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useSession, signOut } from "next-auth/react";
+import { CircleUserRound } from "lucide-react"
 
 const UserProfilePopup = () => {
   const { data: session } = useSession();
@@ -38,7 +39,7 @@ const UserProfilePopup = () => {
         onClick={handleToggle}
         className="bg-transparent hover:bg-transparent rounded"
       >
-        {session?.user?.image && (
+        {(session?.user?.image && (
           <Image
             src={session.user.image}
             alt="User Image"
@@ -46,7 +47,7 @@ const UserProfilePopup = () => {
             height={40}
             className="rounded-full"
           />
-        )}
+        )) || <CircleUserRound />}
       </button>
 
       {isOpen && (

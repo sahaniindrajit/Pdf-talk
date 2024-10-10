@@ -40,6 +40,7 @@ export const UploadDialog: React.FC<UploadDialogProps> = ({ isOpen, onClose, onU
         e.stopPropagation()
         setDragActive(false)
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+
             onUpload(e.dataTransfer.files[0])
             onClose()
         }
