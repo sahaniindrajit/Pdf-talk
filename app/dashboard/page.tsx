@@ -1,13 +1,20 @@
 "use client";
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from '@/components/navbar';
 import Document from '@/components/document';
+import createUser from '@/actions/createUser';
 
 function Dashboard() {
-    return (
-        <>
-            <div className="min-h-screen bg-gray-900" style={{ fontFamily: "'Press Start 2P', cursive" }}>
-                <style jsx global>{`
+  useEffect(() => {
+
+    createUser()
+
+
+  }, [])
+  return (
+    <>
+      <div className="min-h-screen bg-gray-900" style={{ fontFamily: "'Press Start 2P', cursive" }}>
+        <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
         .pixelated {
@@ -31,13 +38,14 @@ function Dashboard() {
             -2px 2px 0 #000;
         }
       `}</style>
-                <Navbar />
-                <Document />
 
-            </div>
+        <Navbar />
+        <Document />
 
-        </>
-    )
+      </div>
+
+    </>
+  )
 }
 
 export default Dashboard
