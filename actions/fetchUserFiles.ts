@@ -1,15 +1,9 @@
 "use server"
-import { getServerSession } from "next-auth";
-import prisma from "@/db";
+import { getServerSession } from "next-auth/next";
 import { cookies } from 'next/headers'
+import prisma from '@/db';
 
-
-interface createFileDetail {
-    fileName: string
-    fileUrl: string
-    createdAt: string
-}
-export default async function createFileDetail({ fileName, fileUrl, createdAt }: createFileDetail) {
+export default async function fetchUserFiles() {
     const session = await getServerSession();
 
     if (!session?.user?.email) {
@@ -19,13 +13,9 @@ export default async function createFileDetail({ fileName, fileUrl, createdAt }:
     if (!userId) {
         throw new Error("User is not authenticated.");
     }
-
-    const fileDetail = await prisma.fileDetail.create({
-        data: {
-            userId: userId.value,
-            fileName: fileName,
-            fileUrl: fileUrl,
-            createdAt: createdAt
+    const userFiles = await prisma.fileDetail.findMany({
+        where: {
+            userId: userId.value
         },
         select: {
             id: true, // Ensure you're selecting these fields
@@ -35,5 +25,5 @@ export default async function createFileDetail({ fileName, fileUrl, createdAt }:
         },
     });
 
-    return fileDetail;
+    return userFiles;
 }
