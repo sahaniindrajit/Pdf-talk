@@ -1,45 +1,73 @@
 import React from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { File, Trash2, FileQuestion, Eye } from "lucide-react"
+import { FileText, Trash2, FileQuestion, Eye, MessageSquare } from "lucide-react"
 interface DocumentCardProps {
     title: string;
     date: string;
     onDelete: () => void;
     onPreview: () => void;
+    onTalk: () => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    isDeleting: any;
 }
-
-export const DocumentCard: React.FC<DocumentCardProps> = ({ title, date, onDelete, onPreview }) => (
+export const DocumentCard: React.FC<DocumentCardProps> = ({ title, date, onDelete, onPreview, onTalk, isDeleting }) => (
     <Card className="bg-gray-700 text-white pixel-border">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{title}</CardTitle>
-            <File className="h-4 w-4 text-gray-400" />
-        </CardHeader>
-        <CardContent>
-            <p className="text-xs text-gray-400">Uploaded: {date}</p>
-            <div className="flex justify-between mt-2">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-blue-400 hover:text-blue-300 hover:bg-blue-900 pixel-border"
-                    onClick={onPreview}
-                >
-                    <Eye className="h-4 w-4 mr-2" />
-                    Preview
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-red-400 hover:text-red-300 hover:bg-red-900 pixel-border"
-                    onClick={onDelete}
-                >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
-                </Button>
-            </div>
-        </CardContent>
+        {isDeleting ? (
+            <CardContent className="flex flex-col items-center justify-center py-12">
+                <div className="flex flex-col items-center">
+                    <div className="relative w-12 h-12 mb-4">
+                        <Trash2 className="h-12 w-12 text-red-400" />
+                        <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">
+                            <div className="animate-spin inline-block w-6 h-6 border-3 border-current border-t-transparent text-blue-400 rounded-full"></div>
+                        </div>
+                    </div>
+                    <p className="text-lg text-center">Deleting...</p>
+                </div>
+            </CardContent>
+        ) : (
+            <>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium truncate max-w-[80%]">{title}</CardTitle>
+                    <FileText className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                </CardHeader>
+                <CardContent>
+                    <p className="text-xs text-gray-400 mb-4">Uploaded: {date}</p>
+                    <div className="flex flex-wrap gap-2">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-blue-400 hover:text-blue-300 hover:bg-blue-900 pixel-border flex-grow"
+                            onClick={onPreview}
+                        >
+                            <Eye className="h-4 w-4 mr-2" />
+                            Preview
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-green-400 hover:text-green-300 hover:bg-green-900 pixel-border flex-grow"
+                            onClick={onTalk}
+                        >
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            Talk
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-400 hover:text-red-300 hover:bg-red-900 pixel-border flex-grow"
+                            onClick={onDelete}
+                        >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                        </Button>
+                    </div>
+                </CardContent>
+            </>
+        )}
     </Card>
 )
+
 
 export const RetroLoadingIcon = () => (
     <div className="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-blue-400 rounded-full" role="status" aria-label="loading">

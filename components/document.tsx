@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FileText } from "lucide-react";
-import { DocumentCard } from './documentCards';
+import { DocumentCard, LoadingComponent, NoDocumentsComponent } from './documentCards';
 import { UploadCard, UploadDialog } from './uploadDocument';
 import { uploadBytes, getDownloadURL } from "firebase/storage";
 import createFileDetail from '@/actions/createFiledetail';
@@ -20,18 +20,22 @@ type Document = {
 export default function Document() {
     const [isUploadOpen, setIsUploadOpen] = useState(false);
     const [documents, setDocuments] = useState<{ id: string; fileName: string; fileUrl: string; createdAt: string; }[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isDeleting, setIsDeleting] = useState(null);
 
 
     useEffect(() => {
         const getUserFiles = async () => {
             try {
-                ////setIsLoading(true)
+                setIsLoading(true)
                 const files = await fetchUserFiles();
 
                 setDocuments(files);
-                //setIsLoading(false)
+
             } catch (err) {
                 console.error(err)
+            } finally {
+                setIsLoading(false)
             }
         };
 
@@ -46,7 +50,6 @@ export default function Document() {
         const filesFolderRef = ref(storage, `pdf-upload/${file.name + " " + timestamp}`);
 
         try {
-            //setIsLoading(true)
             await uploadBytes(filesFolderRef, file);
             const downloadUrl = await getDownloadURL(filesFolderRef);
 
@@ -64,7 +67,6 @@ export default function Document() {
             };
 
             setDocuments([...documents, newDoc]);
-            //setIsLoading(false)
 
         } catch (err) {
             console.error(err);
@@ -72,19 +74,22 @@ export default function Document() {
 
     };
 
-    const handleDelete = async (id: string, fileUrl: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleDelete = async (id: any, fileUrl: string) => {
         try {
-            //setIsLoading(true)
+            setIsDeleting(id)
             const fileRef = ref(storage, fileUrl);
             await deleteObject(fileRef);
 
             await deleteFileDetail(id);
 
             setDocuments(documents.filter(doc => doc.id !== id));
-            //setIsLoading(false)
+
 
         } catch (error) {
             console.error("Error deleting file:", error);
+        } finally {
+            setIsDeleting(null)
         }
 
     };
@@ -92,7 +97,9 @@ export default function Document() {
     const handlePreview = (url: string) => {
         window.open(url, '_blank');
     };
-
+    const handleTalk = () => {
+        console.log(`Talking to PDF with id: `)
+    }
 
     return (
         <div className="min-h-screen bg-gray-900 p-6" style={{ fontFamily: "'Press Start 2P', cursive" }}>
@@ -112,19 +119,29 @@ export default function Document() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <UploadCard onUpload={() => setIsUploadOpen(true)} />
+                    {isLoading ? (
+                        <LoadingComponent />
+                    ) : (
+                        <>
 
+                            {documents.length === 0 ? (
+                                <NoDocumentsComponent />
+                            ) : (
+                                documents.map((doc) => (
+                                    <DocumentCard
+                                        key={doc.id}
+                                        title={doc.fileName}
+                                        date={doc.createdAt}
+                                        onDelete={() => handleDelete(doc.id, doc.fileUrl)}
+                                        onPreview={() => handlePreview(doc.fileUrl)}
+                                        onTalk={handleTalk}
+                                        isDeleting={isDeleting === doc.id}
+                                    />
 
-                    {documents.map((doc) => (
-
-
-                        <DocumentCard
-                            key={doc.id}
-                            title={doc.fileName}
-                            date={doc.createdAt}
-                            onDelete={() => handleDelete(doc.id, doc.fileUrl)}
-                            onPreview={() => handlePreview(doc.fileUrl)}
-                        />
-                    ))}
+                                ))
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
 
