@@ -6,9 +6,6 @@ import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { FileQuestion } from 'lucide-react';
 
-interface DocumentPreviewProps {
-    fileUrl: string;
-}
 
 const CenteredLoadingComponent = () => (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
@@ -31,7 +28,7 @@ const NoFilesFoundComponent = () => (
     </div>
 );
 
-const DocumentPreview: React.FC<DocumentPreviewProps> = () => {
+const DocumentPreview = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [fileExists, setFileExists] = useState(true)
     const [fileName, setFileName] = useState("")
