@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { CenteredLoadingComponent } from "@/components/loadingComponent";
 import { NoFilesFoundComponent } from "@/components/noFileComp";
 
-function DocumentPreview() {
+const DocumentPreview: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [fileExists, setFileExists] = useState(true);
     const [fileName, setFileName] = useState("");
