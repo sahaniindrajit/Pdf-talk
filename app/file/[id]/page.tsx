@@ -4,31 +4,11 @@ import Navbar from '@/components/navbar';
 import PdfTalk from '@/components/pdfTalk';
 import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { FileQuestion } from 'lucide-react';
+import { CenteredLoadingComponent } from '@/components/loadingComponent';
+import { NoFilesFoundComponent } from '@/components/noFileComp';
 
 
-const CenteredLoadingComponent = () => (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-        <div className="flex flex-col items-center">
-            <div className="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-blue-400 rounded-full" role="status" aria-label="loading">
-                <span className="sr-only">Loading...</span>
-            </div>
-            <p className="mt-4 text-lg text-center text-white">Loading...</p>
-        </div>
-    </div>
-);
-
-
-const NoFilesFoundComponent = () => (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-        <div className="flex flex-col items-center text-center text-white">
-            <FileQuestion className="h-16 w-16 text-gray-400 mb-4" />
-            <p className="text-lg mb-2">No Documents Found</p>
-        </div>
-    </div>
-);
-
-export function DocumentPreview() {
+function DocumentPreview() {
     const [isLoading, setIsLoading] = useState(false)
     const [fileExists, setFileExists] = useState(true)
     const [fileName, setFileName] = useState("")
@@ -105,3 +85,5 @@ export function DocumentPreview() {
         </>
     );
 };
+
+export default DocumentPreview
