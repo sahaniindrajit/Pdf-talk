@@ -18,7 +18,7 @@ export default async function fetchUserFiles() {
             userId: userId.value
         },
         select: {
-            id: true, // Ensure you're selecting these fields
+            id: true,
             fileName: true,
             fileUrl: true,
             createdAt: true,
