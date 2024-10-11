@@ -4,8 +4,12 @@ import { File } from "lucide-react"
 import { ChatInterface } from './chatInterface'
 import { DocumentPreview } from './documentPreview'
 
-export default function PdfTalk() {
-    const fileName = "example-document.pdf"
+interface pdfTalk {
+    fileName: string,
+    fileUrl: string
+}
+export default function PdfTalk({ fileName, fileUrl }: pdfTalk) {
+
 
     return (
         <div className="min-h-screen bg-gray-900 p-6 flex flex-col" style={{ fontFamily: "'Press Start 2P', cursive" }}>
@@ -33,7 +37,7 @@ export default function PdfTalk() {
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-grow">
-                    <DocumentPreview fileName={fileName} />
+                    <DocumentPreview fileName={fileName} fileUrl={fileUrl} />
                     <ChatInterface />
                 </div>
             </div>
