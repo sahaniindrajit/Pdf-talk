@@ -8,6 +8,7 @@ import { storage } from '@/firebase';
 import fetchUserFiles from '@/actions/fetchUserFiles';
 import { deleteObject, ref } from "firebase/storage";
 import deleteFileDetail from '@/actions/deleteFileDetail';
+import { useRouter } from 'next/navigation';
 
 type Document = {
     id: string;
@@ -22,7 +23,7 @@ export default function Document() {
     const [documents, setDocuments] = useState<{ id: string; fileName: string; fileUrl: string; createdAt: string; }[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isDeleting, setIsDeleting] = useState(null);
-
+    const router = useRouter();
 
     useEffect(() => {
         const getUserFiles = async () => {
@@ -97,8 +98,10 @@ export default function Document() {
     const handlePreview = (url: string) => {
         window.open(url, '_blank');
     };
-    const handleTalk = () => {
-        console.log(`Talking to PDF with id: `)
+    const handleTalk = (id: string) => {
+        router.push(`/file/${id}`)
+
+
     }
 
     return (
@@ -134,7 +137,7 @@ export default function Document() {
                                         date={doc.createdAt}
                                         onDelete={() => handleDelete(doc.id, doc.fileUrl)}
                                         onPreview={() => handlePreview(doc.fileUrl)}
-                                        onTalk={handleTalk}
+                                        onTalk={() => handleTalk(doc.id)}
                                         isDeleting={isDeleting === doc.id}
                                     />
 
