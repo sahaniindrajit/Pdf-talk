@@ -28,7 +28,7 @@ const NoFilesFoundComponent = () => (
     </div>
 );
 
-export const DocumentPreview = () => {
+function DocumentPreview() {
     const [isLoading, setIsLoading] = useState(false)
     const [fileExists, setFileExists] = useState(true)
     const [fileName, setFileName] = useState("")
@@ -106,6 +106,4 @@ export const DocumentPreview = () => {
     );
 };
 
-
-
-
+export default DocumentPreview
