@@ -6,7 +6,7 @@ export async function middleware(req: NextRequest) {
 
     const { pathname } = req.nextUrl;
 
-    if (!token && pathname.startsWith('/dashboard')) {
+    if (!token && (pathname.startsWith('/dashboard') || pathname.startsWith('/file'))) {
         return NextResponse.redirect(new URL('/signin', req.url));
     }
 
@@ -18,5 +18,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/dashboard/:path*', '/signin', '/signup'],
+    matcher: ['/dashboard/:path*', '/file/:path*', '/signin', '/signup'],
 };
