@@ -1,46 +1,25 @@
 "use client";
-import React, { useEffect } from 'react'
-import Navbar from '@/components/navbar';
-import Document from '@/components/document';
+import React, { useEffect, Suspense, lazy } from 'react';
 import createUser from '@/actions/createUser';
+import { CenteredLoadingComponent } from '@/components/loadingComponent';
+
+const Navbar = lazy(() => import('@/components/navbar'));
+const Document = lazy(() => import('@/components/document'));
+
 
 function Dashboard() {
   useEffect(() => {
-
     createUser()
-
 
   }, [])
   return (
     <>
-      <div className="min-h-screen bg-gray-900" style={{ fontFamily: "'Press Start 2P', cursive" }}>
-        <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        
-        .pixelated {
-          image-rendering: pixelated;
-          image-rendering: crisp-edges;
-        }
-        
-        .pixel-border {
-          box-shadow: 
-            -4px 0 0 0 #000,
-            4px 0 0 0 #000,
-            0 -4px 0 0 #000,
-            0 4px 0 0 #000;
-        }
+      <div>
+        <Suspense fallback={<CenteredLoadingComponent />}>
+          <Navbar />
+          <Document />
+        </Suspense>
 
-        .pixel-text {
-          text-shadow: 
-            2px 2px 0 #000,
-            -2px -2px 0 #000,
-            2px -2px 0 #000,
-            -2px 2px 0 #000;
-        }
-      `}</style>
-
-        <Navbar />
-        <Document />
 
       </div>
 

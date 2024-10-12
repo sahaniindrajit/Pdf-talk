@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/providers/sessionProvider";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Pdf Talk",
@@ -28,12 +17,13 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+
+      <body className="min-h-screen bg-gray-900" style={{ fontFamily: "'Press Start 2P', cursive" }}>
 
         <SessionProvider session={session}> {children}</SessionProvider>
+
       </body>
+
     </html>
   );
 }
