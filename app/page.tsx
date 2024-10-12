@@ -2,8 +2,11 @@
 import { MouseEventHandler } from 'react';
 import React from 'react'
 import { Button } from "@/components/ui/button"
-import { FileText, User } from "lucide-react"
+import { User } from "lucide-react"
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+
+
 interface OnClickProps {
   onclick: MouseEventHandler<HTMLButtonElement>;
 }
@@ -11,8 +14,13 @@ interface OnClickProps {
 const NavBar: React.FC<OnClickProps> = ({ onclick }) => (
   <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
     <div className="flex items-center">
-      <div className="w-10 h-10 bg-red-500 mr-2 pixel-border flex items-center justify-center" style={{ boxShadow: 'inset 2px 2px 0 2px #000' }}>
-        <FileText className="text-white w-6 h-6" />
+      <div className=" h-10 mr-2  flex items-center justify-center">
+        <Image
+          src='/logo.png'
+          alt="User Image"
+          width={60}
+          height={60}
+        />
       </div>
       <span className="text-xl font-bold">PDF TALK</span>
     </div>
