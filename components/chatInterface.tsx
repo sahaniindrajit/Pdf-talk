@@ -62,7 +62,7 @@ export const ChatInterface = () => {
             setInput('')
             // Simulate AI response
             setTimeout(() => {
-                setMessages(prevMessages => [...prevMessages, { isAi: true, text: `I received your message: "${input}". How can I assist you further?` }])
+                setMessages(prevMessages => [...prevMessages, { isAi: true, text: `I received your message: "${input}". The ai chat is still under production` }])
             }, 1000)
         }
     }
