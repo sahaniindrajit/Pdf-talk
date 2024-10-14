@@ -9,7 +9,6 @@ import fetchUserFiles from '@/actions/fetchUserFiles';
 import { deleteObject, ref } from "firebase/storage";
 import deleteFileDetail from '@/actions/deleteFileDetail';
 import { useRouter } from 'next/navigation';
-import { textProcessing } from '@/actions/pdfProcessing';
 
 type Document = {
     id: string;
@@ -53,8 +52,6 @@ export default function Document() {
         const filesFolderRef = ref(storage, `pdf-upload/${file.name + " " + timestamp}`);
 
         try {
-            textProcessing(event, 350)
-
             await uploadBytes(filesFolderRef, file);
             const downloadUrl = await getDownloadURL(filesFolderRef);
             const newFileDetail = await createFileDetail({

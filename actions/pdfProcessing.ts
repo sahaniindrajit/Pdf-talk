@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import pdfToText from 'react-pdftotext'
 import { HfInference } from '@huggingface/inference';
+import pineconeClient from '@/lib/pinecone';
+import { PineconeStore } from "@langchain/pinecone";
+import { Index, RecordMetadata } from "@pinecone-database/pinecone"
 
-// Initialize the client with your API key
-const hf = new HfInference(process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY);  // Replace with your actual API key
+const hf = new HfInference(process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY);
+
 
 function extractText(event: any): Promise<string> {
     const file = event.target.files?.[0];
@@ -19,7 +22,6 @@ function extractText(event: any): Promise<string> {
             throw err;  // propagate the error if needed
         });
 }
-
 
 function chunkText(text: string, chunkSize: number): string[] {
     const chunks = [];
@@ -45,7 +47,7 @@ function chunkText(text: string, chunkSize: number): string[] {
 async function getEmbeddingsForChunks(chunks: string[]) {
     try {
         const result = await hf.featureExtraction({
-            model: 'sentence-transformers/all-MiniLM-L6-v2', // You can change the model if needed
+            model: 'sentence-transformers/all-MiniLM-L6-v2',
             inputs: chunks,
         });
         return result;
@@ -55,16 +57,68 @@ async function getEmbeddingsForChunks(chunks: string[]) {
     }
 }
 
-export function textProcessing(event: any, chunkSize: number) {
+async function namespaceExists(
+    index: Index<RecordMetadata>,
+    namespace: string
+) {
+    if (!namespace) {
+        throw new Error("Namespace not found");
+    }
+
+    const { namespaces } = await index.describeIndexStats();
+
+    return namespaces?.[namespace] !== undefined;
+}
+
+export const indexName = "pdf-talk";
+
+async function storeEmbeddingsindb(docID: string, chunks: any, embeddings: any) {
+
+    let pineconeVectorStore;
+
+    const index = await pineconeClient.index(indexName);
+
+    const nameSpaceAlreadyExists = await namespaceExists(index, docID);
+
+    if (nameSpaceAlreadyExists) {
+
+        pineconeVectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+            pineconeIndex: index,
+            namespace: docID,
+        });
+        return pineconeVectorStore;
+    } else {
+        pineconeVectorStore = await PineconeStore.fromDocuments(chunks, embeddings, {
+            pineconeIndex: index,
+            namespace: docID,
+        });
+        return pineconeVectorStore;
+    }
+}
+
+export function textProcessing(event: any, chunkSize: number, docID: string) {
+    // Step 1: Extract text from the document
     extractText(event)
         .then((text) => {
+            // Step 2: Chunk the extracted text
             const chunks = chunkText(text, chunkSize);
-            getEmbeddingsForChunks(chunks).then(embeddings => {
-                console.log(embeddings);
-            })
+
+            // Step 3: Get embeddings for the chunks of text
+            return getEmbeddingsForChunks(chunks).then((embeddings) => ({
+                chunks,
+                embeddings
+            }));
+        })
+        .then(({ chunks, embeddings }) => {
+            // Step 4: Store embeddings in Pinecone DB
+            return storeEmbeddingsindb(docID, chunks, embeddings);
+        })
+        .then(() => {
+            // Step 5: Success message
+            console.log("Embeddings stored successfully!");
         })
         .catch((err) => {
+            // Error handling for any part of the process
             console.error("Error during text processing:", err);
         });
 }
-
