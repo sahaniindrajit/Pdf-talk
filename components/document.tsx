@@ -60,6 +60,7 @@ export default function Document() {
                 createdAt: new Date().toISOString().split('T')[0],
             });
 
+
             const newDoc = {
                 id: newFileDetail.id,  // Use ID returned by Prisma
                 fileName: newFileDetail.fileName,
