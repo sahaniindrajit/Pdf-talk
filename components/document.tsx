@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FileText } from "lucide-react";
 import { DocumentCard, LoadingComponent, NoDocumentsComponent } from './documentCards';
-import { UploadCard, UploadDialog } from './uploadDocument';
+import { ProcessingDialog, UploadCard, UploadDialog } from './uploadDocument';
 import { uploadBytes, getDownloadURL } from "firebase/storage";
 import createFileDetail from '@/actions/createFiledetail';
 import { storage } from '@/firebase';
@@ -24,6 +24,7 @@ export default function Document() {
     const [documents, setDocuments] = useState<{ id: string; fileName: string; fileUrl: string; createdAt: string; }[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isDeleting, setIsDeleting] = useState(null);
+    const [isProcessing, setIsProcessing] = useState(false)
     const router = useRouter();
 
     useEffect(() => {
@@ -53,6 +54,7 @@ export default function Document() {
         const filesFolderRef = ref(storage, `pdf-upload/${file.name + " " + timestamp}`);
 
         try {
+            setIsProcessing(true)
             await uploadBytes(filesFolderRef, file);
             const downloadUrl = await getDownloadURL(filesFolderRef);
             const newFileDetail = await createFileDetail({
@@ -68,10 +70,11 @@ export default function Document() {
                 fileUrl: newFileDetail.fileUrl,
                 createdAt: newFileDetail.createdAt,
             };
-
+            setIsProcessing(false)
             setDocuments([...documents, newDoc]);
 
         } catch (err) {
+            setIsProcessing(false)
             console.error(err);
         }
 
@@ -156,6 +159,7 @@ export default function Document() {
                 onClose={() => setIsUploadOpen(false)}
                 onUpload={handleUpload}
             />
+            <ProcessingDialog isOpen={isProcessing} />
         </div>
     );
 }
