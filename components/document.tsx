@@ -9,7 +9,7 @@ import fetchUserFiles from '@/actions/fetchUserFiles';
 import { deleteObject, ref } from "firebase/storage";
 import deleteFileDetail from '@/actions/deleteFileDetail';
 import { useRouter } from 'next/navigation';
-import { storeEmbeddingsInPinecone } from '@/actions/embeddings';
+import { storeEmbeddingsInPinecone } from '@/actions/storeEmbeddings';
 
 type Document = {
     id: string;
