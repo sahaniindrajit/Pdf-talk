@@ -8,4 +8,6 @@ const pineconeClient = new Pinecone({
     apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY,
 });
 
-export default pineconeClient;
+const index = pineconeClient.index('pdftalk');
+
+export default index

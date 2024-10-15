@@ -1,16 +1,14 @@
 "use server";
+import index from "@/lib/pinecone";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { OpenAIEmbeddings } from "@langchain/openai";
 //import { HumanMessage, AIMessage } from "@langchain/core/messages";
 //import { ChatPromptTemplate } from "@langchain/core/prompts";
 //import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { PineconeStore } from "@langchain/pinecone";
-import { Index, RecordMetadata } from "@pinecone-database/pinecone";
 //import { createRetrievalChain } from "langchain/chains/retrieval";
 //import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 //import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retriever";
-import pineconeClient from "@/lib/pinecone";
 import { generateChunks } from "./textProcessing";
+import { HfInference } from '@huggingface/inference';
 //import { ChatGroq } from "@langchain/groq";
 {/*
 const model = new ChatGroq({
@@ -18,123 +16,48 @@ const model = new ChatGroq({
   model: "llama3-8b-8192",
   temperature: 0.2,
 });*/}
+const hf = new HfInference(process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY);
 
 
-async function namespaceExists(
-    index: Index<RecordMetadata>,
-    namespace: string
-) {
-    if (!namespace) {
-        throw new Error("Namespace not found");
-    }
-
-    const { namespaces } = await index.describeIndexStats();
-
-    return namespaces?.[namespace] !== undefined;
-}
-
-const indexName = "pdftalk";
-
-export async function generateEmbeddingsInPineconeVectorDB(docID: string, docsURL: string) {
-
-
-    let pineconeVectorStore;
-
-    console.log("----Generating Embeddings in Pinecone Vector DB----");
-
-    const embeddings = new OpenAIEmbeddings({
-        model: "text-embedding-ada-002",
-        openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+async function getEmbeddingsForChunks(chunks: any) {
+  try {
+    const result = await hf.featureExtraction({
+      model: 'sentence-transformers/all-MiniLM-L6-v2',
+      inputs: chunks,
     });
-
-    const index = pineconeClient.index(indexName);
-
-    const nameSpaceAlreadyExists = await namespaceExists(index, docID);
-
-    if (nameSpaceAlreadyExists) {
-        console.log(
-            `---Namespace ${docID} already exists, reusing existing embeddings...---`
-        );
-        pineconeVectorStore = await PineconeStore.fromExistingIndex(embeddings, {
-            pineconeIndex: index,
-            namespace: docID,
-        });
-        return pineconeVectorStore;
-    } else {
-        const splitDocs = await generateChunks(docsURL);
-
-        // console.log(
-        // `Storing the embeddings in ${docID} in the ${indexName} Pinecone Vector DB`
-        // );
-
-        pineconeVectorStore = await PineconeStore.fromDocuments(
-            splitDocs,
-            embeddings,
-            {
-                pineconeIndex: index,
-                namespace: docID,
-            }
-        );
-        return pineconeVectorStore;
-    }
+    return result;
+  } catch (error) {
+    console.error("Error generating embeddings:", error);
+    throw error;
+  }
 }
-{/*
-const generateLangchainCompletion = async (docID: string, question: string) => {
-  let pineconeStore;
 
-  pineconeStore = await generateEmbeddingsInPineconeVectorDB(docID);
-  // console.log("----Creating Langchain Retriever----");
-  const retrievalChain = pineconeStore.asRetriever();
+export async function storeEmbeddingsInPinecone(docsID: string, docsURL: string) {
 
-  const chatHistory = await fetchMessageFromDB(docID);
+  const chunks = await generateChunks(docsURL);
 
-  // console.log("Defining a prompt template");
+  const pageContents = chunks.map((chunk: any) => chunk.pageContent);
 
-  const historyAwarePromptTemplate = ChatPromptTemplate.fromMessages([
-    ...chatHistory,
-    ["user", "{input}"],
-    [
-      "user",
-      "Given the conversation above, provide a search query to look up relevant information from the conversation.",
-    ],
-  ]);
+  const embeddings = await getEmbeddingsForChunks(pageContents);
 
-  const historyAwareRetrieverChain = await createHistoryAwareRetriever({
-    llm: model,
-    retriever: retrievalChain,
-    rephrasePrompt: historyAwarePromptTemplate,
-  });
+  for (let i = 0; i < embeddings.length; i++) {
+    const embedding = embeddings[i];
 
-  // console.log("---Defining a prompt template to answer the question---");
+    // Check if embedding is valid before proceeding
+    if (!Array.isArray(embedding)) {
+      console.error(`Embedding at index ${i} is invalid`);
+      continue;
+    }
 
-  const questionPromptTemplate = ChatPromptTemplate.fromMessages([
-    [
-      "system",
-      "Answer the user question based on the below content: \n\n {context}",
-    ],
-    ...chatHistory,
-    ["user", question],
-  ]);
+    await index.namespace(docsID).upsert([
 
-  const historyCombinedDocsChain = await createStuffDocumentsChain({
-    llm: model,
-    prompt: questionPromptTemplate,
-  });
+      {
+        id: `chunk-${i}`,
+        values: embedding as any,
+        metadata: { docs: docsID }
+      }
+    ]);
+  }
 
-  // console.log("Creating the main retrieval chain");
 
-  const conversationalRetrievalChain = await createRetrievalChain({
-    retriever: historyAwareRetrieverChain,
-    combineDocsChain: historyCombinedDocsChain,
-  });
-
-  const result = await conversationalRetrievalChain.invoke({
-    chat_history: chatHistory,
-    input: question,
-  });
-
-  // console.log(result);
-  return result.answer;
-};
-
-export { model, generateLangchainCompletion };*/}
+}

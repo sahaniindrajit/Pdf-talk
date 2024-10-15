@@ -9,6 +9,7 @@ import fetchUserFiles from '@/actions/fetchUserFiles';
 import { deleteObject, ref } from "firebase/storage";
 import deleteFileDetail from '@/actions/deleteFileDetail';
 import { useRouter } from 'next/navigation';
+import { storeEmbeddingsInPinecone } from '@/actions/embeddings';
 
 type Document = {
     id: string;
@@ -59,7 +60,7 @@ export default function Document() {
                 fileUrl: downloadUrl,
                 createdAt: new Date().toISOString().split('T')[0],
             });
-
+            storeEmbeddingsInPinecone(newFileDetail.id, downloadUrl)
 
             const newDoc = {
                 id: newFileDetail.id,  // Use ID returned by Prisma
