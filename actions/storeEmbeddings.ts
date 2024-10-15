@@ -27,7 +27,7 @@ export async function storeEmbeddingsInPinecone(docsID: string, docsURL: string)
       {
         id: `chunk-${i}`,
         values: embedding as any,
-        metadata: { docs: docsID }
+        metadata: { chunks: `${pageContents[i]}` }
       }
     ]);
   }

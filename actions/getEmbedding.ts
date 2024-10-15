@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import hf from "@/lib/huggingFaceEmbedding";
+import { hf } from "@/lib/huggingFaceEmbedding";
 
 export default async function getEmbeddingsForChunks(chunks: any) {
     try {
