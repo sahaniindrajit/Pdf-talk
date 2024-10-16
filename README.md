@@ -1,6 +1,7 @@
 ## Pdf-Talk
 
-Pdf-Talk is a web application that allows users to upload PDF documents and ask questions related to the content of the PDF. The AI will analyze the uploaded PDF and provide answers based on the document's contents, making it easier for users to extract relevant information without manually reading through the entire document. This tool leverages modern AI models and natural language processing (NLP) to provide concise and accurate responses.
+Pdf-Talk is a web application that allows users to upload PDF documents and ask questions related to the content of the PDF. The AI will analyze the uploaded PDF and provide answers based on the document's contents, making it easier for users to extract relevant information without manually reading through the entire document. This tool leverages modern AI models and natural language processing (NLP) to provide concise and accurate responses.  [Live link](https://pdf-talk-opal.vercel.app/)
+
 
 ### Features
 
@@ -32,6 +33,9 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
 OPENAI_API_KEY=your_openai_api_key
+NEXT_PUBLIC_HUGGINGFACE_API_KEY=your_NEXT_PUBLIC_HUGGINGFACE_API_KEY
+NEXT_PUBLIC_PINECONE_API_KEY=your_NEXT_PUBLIC_PINECONE_API_KEY
+NEXT_PUBLIC_ANTHROPIC_API_KEY=your_NEXT_PUBLIC_ANTHROPIC_API_KEY
 ```
 
 ### Usage
