@@ -25,7 +25,7 @@ export async function storeEmbeddingsInPinecone(docsID: string, docsURL: string)
     await index.namespace(docsID).upsert([
 
       {
-        id: `chunk-${i}`,
+        id: `chunk-${docsID}-${i}`,
         values: embedding as any,
         metadata: { chunks: `${pageContents[i]}` }
       }
