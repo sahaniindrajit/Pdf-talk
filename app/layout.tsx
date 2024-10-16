@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/providers/sessionProvider";
-
+import { Analytics } from "@vercel/analytics/react"
 
 export const metadata: Metadata = {
   title: "Pdf Talk",
@@ -20,7 +20,10 @@ export default async function RootLayout({
 
       <body className="min-h-screen bg-gray-900" style={{ fontFamily: "'Press Start 2P', cursive" }}>
 
-        <SessionProvider session={session}> {children}</SessionProvider>
+        <SessionProvider session={session}>
+          {children}
+          <Analytics />
+        </SessionProvider>
 
       </body>
 
